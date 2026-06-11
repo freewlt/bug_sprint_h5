@@ -7,6 +7,7 @@ const RESULTS_FILE = path.join(__dirname, 'results.json');
 const RUN_COUNT = 5;
 const NAVIGATION_TIMEOUT_MS = 120000;
 const READY_TIMEOUT_MS = 120000;
+const FPS_SAMPLE_WAIT_MS = 2500;
 
 const DEFAULT_RESULTS = {
   schema_version: 1,
@@ -236,6 +237,8 @@ async function measureOnce(browser, url) {
     );
 
     const elapsed = Date.now() - started;
+    await startGameplay(page);
+    await page.waitForTimeout(FPS_SAMPLE_WAIT_MS);
     const benchmark = await readBenchmark(page);
 
     return {
@@ -245,6 +248,11 @@ async function measureOnce(browser, url) {
   } finally {
     await context.close();
   }
+}
+
+async function startGameplay(page) {
+  const viewport = page.viewportSize() || { width: 1280, height: 720 };
+  await page.mouse.click(viewport.width / 2, viewport.height / 2);
 }
 
 async function readBenchmark(page) {

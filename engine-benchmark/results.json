@@ -1,28 +1,71 @@
 {
   "schema_version": 1,
-  "updated_at": null,
+  "updated_at": "2026-06-11T03:13:56.098Z",
   "engines": {
     "cocos": {
       "name": "Cocos Creator",
       "version": "3.8",
       "label": "Cocos Creator 3.8",
-      "tasks": {},
-      "package_size_mb": null,
-      "package_size_bytes": null,
-      "package_size_path": null,
-      "web_build_time_seconds": null,
-      "last_build_command": null,
-      "last_build_exit_code": null,
-      "first_screen_time_ms": null,
-      "first_screen_runs_ms": [],
-      "first_screen_url": null,
-      "benchmark": {
-        "avgFps": null,
-        "minFps": null,
-        "objectCount": null,
-        "runs": []
+      "tasks": {
+        "create_project": {
+          "started_at": "2026-06-11T02:10:55.654Z",
+          "ended_at": "2026-06-11T02:16:21.712Z",
+          "duration_seconds": 326.06
+        },
+        "core_gameplay": {
+          "started_at": "2026-06-11T02:13:01.014Z",
+          "ended_at": "2026-06-11T02:16:27.848Z",
+          "duration_seconds": 206.83
+        }
       },
-      "updated_at": null
+      "package_size_mb": 6.94,
+      "package_size_bytes": 7274368,
+      "package_size_path": "cocos-creator-3.8\\build\\web-mobile",
+      "web_build_time_seconds": 60.17,
+      "last_build_command": "C:\\ProgramData\\cocos\\editors\\Creator\\3.8.8\\CocosCreator.exe --project E:\\freewlt\\myself\\ai\\bug_sprint_h5\\cocos-creator-3.8 --build \"platform=web-mobile;debug=false\"",
+      "last_build_exit_code": 36,
+      "first_screen_time_ms": 2169,
+      "first_screen_runs_ms": [
+        2175,
+        2169,
+        2160,
+        2171,
+        2142
+      ],
+      "first_screen_url": "http://127.0.0.1:8088/",
+      "benchmark": {
+        "avgFps": 50.32,
+        "minFps": 49.22,
+        "objectCount": 4,
+        "runs": [
+          {
+            "avgFps": 40.8,
+            "minFps": 40.64,
+            "objectCount": 4
+          },
+          {
+            "avgFps": 54.22,
+            "minFps": 53.13,
+            "objectCount": 4
+          },
+          {
+            "avgFps": 57.29,
+            "minFps": 55.56,
+            "objectCount": 4
+          },
+          {
+            "avgFps": 50.32,
+            "minFps": 49.22,
+            "objectCount": 4
+          },
+          {
+            "avgFps": 45.58,
+            "minFps": 44.49,
+            "objectCount": 4
+          }
+        ]
+      },
+      "updated_at": "2026-06-11T03:13:56.097Z"
     },
     "laya": {
       "name": "LayaAir",

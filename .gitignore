@@ -1,0 +1,13 @@
+# Cocos Creator generated folders
+**/library/
+**/local/
+**/temp/
+**/build/
+**/profiles/
+**/.creator/
+
+# Node / editor noise
+node_modules/
+.DS_Store
+Thumbs.db
+*.log

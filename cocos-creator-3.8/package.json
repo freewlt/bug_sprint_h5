@@ -1,0 +1,9 @@
+{
+  "name": "bug-sprint-cocos-creator-3-8",
+  "uuid": "5f704da7-9fb9-46a5-9f13-a4a7be2f2ef5",
+  "version": "1.0.0",
+  "creator": {
+    "version": "3.8.8"
+  },
+  "description": "Cocos Creator 3.8 version of the Bug Sprint H5 benchmark demo."
+}

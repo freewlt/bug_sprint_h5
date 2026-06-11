@@ -261,21 +261,35 @@ function directorySize(dir) {
 }
 
 function buildTime(engineInput, commandParts) {
-  const command = commandParts.join(' ').trim();
-  if (!command) {
+  const directSpawn = commandParts[0] === '--';
+  const executable = directSpawn ? commandParts[1] : null;
+  const args = directSpawn ? commandParts.slice(2) : [];
+  const command = directSpawn ? formatCommand([executable, ...args]) : commandParts.join(' ').trim();
+
+  if (!command || (directSpawn && !executable)) {
     throw new Error('Missing buildCommand.');
   }
 
   const results = loadResults();
   const engine = getEngine(results, engineInput);
   const started = Date.now();
+  const env = { ...process.env };
+
+  if (normalizeEngine(engineInput) === 'cocos') {
+    delete env.ELECTRON_RUN_AS_NODE;
+  }
 
   console.log(`Running build command for ${engine.label}: ${command}`);
 
-  const child = spawn(command, {
+  const child = directSpawn ? spawn(executable, args, {
+    cwd: process.cwd(),
+    stdio: 'inherit',
+    env
+  }) : spawn(command, {
     cwd: process.cwd(),
     shell: true,
-    stdio: 'inherit'
+    stdio: 'inherit',
+    env
   });
 
   child.on('close', (code) => {
@@ -292,11 +306,29 @@ function buildTime(engineInput, commandParts) {
     saveResults(latest);
     console.log(`${latestEngine.label} build time: ${formatNumber(durationSeconds)}s`);
 
-    if (code !== 0) {
+    if (!isSuccessfulBuildExit(engineInput, code)) {
       console.error(`Build command exited with code ${code}.`);
       process.exitCode = code || 1;
     }
   });
+}
+
+function formatCommand(parts) {
+  return parts
+    .filter((part) => part !== null && part !== undefined && part !== '')
+    .map((part) => {
+      const text = String(part);
+      return /\s|;/.test(text) ? `"${text.replace(/"/g, '\\"')}"` : text;
+    })
+    .join(' ');
+}
+
+function isSuccessfulBuildExit(engineInput, code) {
+  if (code === 0) {
+    return true;
+  }
+
+  return normalizeEngine(engineInput) === 'cocos' && code === 36;
 }
 
 function report() {
