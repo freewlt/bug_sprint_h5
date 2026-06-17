@@ -3,43 +3,75 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Bug 冲刺 H5 Demo</title>
+<title>Bug 冲刺 H5 — 引擎对比</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;height:100%;background:#101827;color:#fff;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden;touch-action:none}#wrap{width:100vw;height:100vh;display:grid;place-items:center;background:radial-gradient(circle at top,rgba(59,130,246,.25),transparent 35%),linear-gradient(180deg,#0f172a,#111827)}canvas{width:min(100vw,calc(100vh*750/1334));height:min(100vh,calc(100vw*1334/750));background:#111827;border-radius:18px;box-shadow:0 20px 80px rgba(0,0,0,.45);display:block}.tip{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);font-size:12px;color:rgba(255,255,255,.55);pointer-events:none;white-space:nowrap}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0f172a;color:#fff;overflow:hidden}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;min-height:100vh}
+
+.hero{text-align:center;margin-bottom:52px}
+.hero h1{font-size:clamp(28px,6vw,52px);font-weight:800;letter-spacing:-.02em;background:linear-gradient(135deg,#facc15 0%,#f97316 60%,#ef4444 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.15;margin-bottom:14px}
+.hero p{font-size:clamp(14px,2.5vw,18px);color:rgba(255,255,255,.55);letter-spacing:.02em}
+
+.cards{display:flex;gap:24px;flex-wrap:wrap;justify-content:center;padding:0 24px}
+
+.card{position:relative;width:clamp(260px,38vw,320px);border-radius:24px;overflow:hidden;cursor:pointer;text-decoration:none;display:block;transition:transform .2s ease,box-shadow .2s ease}
+.card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.card:active{transform:translateY(-2px)}
+
+.card-inner{padding:36px 32px 32px;background:linear-gradient(160deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.02) 100%);border:1px solid rgba(255,255,255,.1)}
+
+.badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:100px;margin-bottom:20px}
+.card-cocos .badge{background:rgba(37,99,235,.25);color:#93c5fd;border:1px solid rgba(37,99,235,.4)}
+.card-laya .badge{background:rgba(5,150,105,.25);color:#6ee7b7;border:1px solid rgba(5,150,105,.4)}
+
+.card-icon{font-size:52px;margin-bottom:16px;line-height:1}
+.card h2{font-size:22px;font-weight:700;margin-bottom:8px;color:#f1f5f9}
+.card p{font-size:14px;color:rgba(255,255,255,.45);line-height:1.6;margin-bottom:28px}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px 0;border-radius:14px;font-size:15px;font-weight:600;transition:filter .15s}
+.card:hover .btn{filter:brightness(1.1)}
+.card-cocos .btn{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;box-shadow:0 4px 20px rgba(37,99,235,.4)}
+.card-laya .btn{background:linear-gradient(135deg,#059669,#047857);color:#fff;box-shadow:0 4px 20px rgba(5,150,105,.4)}
+
+.btn-arrow{font-size:18px;transition:transform .2s}
+.card:hover .btn-arrow{transform:translateX(4px)}
+
+.footer{margin-top:52px;font-size:12px;color:rgba(255,255,255,.25);text-align:center}
+
+/* bg dots */
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(rgba(255,255,255,.04) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
+body::after{content:'';position:fixed;top:0;left:50%;transform:translateX(-50%);width:800px;height:400px;background:radial-gradient(ellipse at top,rgba(59,130,246,.15),transparent 70%);pointer-events:none}
 </style>
 </head>
 <body>
-<div id="wrap"><canvas id="game" width="750" height="1334"></canvas></div>
-<div class="tip">鼠标拖动 / 手指滑动控制程序员左右移动</div>
-<script>
-(()=>{
-const canvas=document.getElementById('game'),ctx=canvas.getContext('2d'),W=750,H=1334;
-const S={START:0,PLAY:1,OVER:2};
-const game={state:S.START,t:0,last:performance.now(),score:0,hp:3,maxHp:3,inv:0,survival:0,spawn:0,prop:1.2,diff:1,objs:[],parts:[],shake:0,down:false};
-const player={x:W/2,y:H-190,r:42,targetX:W/2};
-const obs=[['Bug',1,'#ef4444','🐞'],['需求变更',1,'#f97316','📌'],['加急',1,'#eab308','⚡'],['线上报错',2,'#dc2626','🔥']];
-const props=[['咖啡',0,1,0,'#a16207','☕'],['键盘',100,0,0,'#22c55e','⌨'],['代码块',50,0,0,'#38bdf8','</>'],['提审通过',150,0,3,'#a855f7','✓']];
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>Math.random()*(b-a)+a,pick=a=>a[Math.floor(Math.random()*a.length)];
-function reset(){Object.assign(game,{state:S.PLAY,t:0,score:0,hp:3,inv:0,survival:0,spawn:0,prop:1.2,diff:1,objs:[],parts:[],shake:0});player.x=W/2;player.targetX=W/2}
-function round(x,y,w,h,r,fill,stroke){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=4;ctx.stroke()}}
-function spawnObs(){let d=pick(obs),size=d[0]=='线上报错'?76:68;game.objs.push({kind:'obs',text:d[0],damage:d[1],color:d[2],icon:d[3],x:rand(70,W-70),y:-80,r:size/2,size,speed:rand(280,390)+game.diff*35,rot:rand(-.2,.2)})}
-function spawnProp(){let d=pick(props),size=62;game.objs.push({kind:'prop',text:d[0],score:d[1],heal:d[2],inv:d[3],color:d[4],icon:d[5],x:rand(70,W-70),y:-80,r:size/2,size,speed:rand(230,310)+game.diff*22,rot:rand(-.15,.15)})}
-function particles(x,y,color,n=12){for(let i=0;i<n;i++)game.parts.push({x,y,vx:rand(-220,220),vy:rand(-280,80),life:rand(.35,.75),max:.75,color,r:rand(4,9)})}
-function hit(a,b){let dx=a.x-b.x,dy=a.y-b.y;return dx*dx+dy*dy<(a.r+b.r)*(a.r+b.r)}
-function pointer(clientX){let r=canvas.getBoundingClientRect(),scale=W/r.width;player.targetX=clamp((clientX-r.left)*scale,60,W-60)}
-canvas.addEventListener('pointerdown',e=>{game.down=true;if(game.state!==S.PLAY)reset();else pointer(e.clientX)});
-canvas.addEventListener('pointermove',e=>{if(game.down&&game.state===S.PLAY)pointer(e.clientX)});window.addEventListener('pointerup',()=>game.down=false);
-window.addEventListener('keydown',e=>{if(e.code==='Space'&&game.state!==S.PLAY)reset();if(e.code==='ArrowLeft')player.targetX-=80;if(e.code==='ArrowRight')player.targetX+=80;player.targetX=clamp(player.targetX,60,W-60)});
-function bg(){let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0f172a');g.addColorStop(.55,'#111827');g.addColorStop(1,'#1f2937');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);ctx.fillStyle='rgba(255,255,255,.04)';for(let i=0;i<9;i++){let y=(i*170+(game.t*35)%170)-170;ctx.fillRect(0,y,W,2)}ctx.fillStyle='rgba(59,130,246,.12)';for(let i=0;i<16;i++){let x=(i*95+Math.sin(game.t+i)*20)%W,y=(i*121+game.t*26)%H;round(x,y,50,18,9,'rgba(59,130,246,.10)')}round(46,H-130,W-92,54,18,'#0b1220','rgba(148,163,184,.18)');ctx.fillStyle='rgba(148,163,184,.22)';ctx.font='24px sans-serif';ctx.fillText('深夜工位 · Demo 冲刺中',72,H-95)}
-function hud(){round(28,24,W-56,96,24,'rgba(15,23,42,.72)','rgba(148,163,184,.25)');ctx.fillStyle='#fff';ctx.font='bold 34px sans-serif';ctx.fillText('Bug 冲刺',54,64);ctx.font='28px monospace';ctx.fillStyle='#facc15';ctx.fillText('分数 '+Math.floor(game.score),W-230,64);for(let i=0;i<game.maxHp;i++){ctx.fillStyle=i<game.hp?'#ef4444':'rgba(255,255,255,.18)';ctx.beginPath();let x=58+i*42,y=92;ctx.arc(x-8,y-4,10,0,Math.PI*2);ctx.arc(x+8,y-4,10,0,Math.PI*2);ctx.moveTo(x-20,y);ctx.lineTo(x,y+23);ctx.lineTo(x+20,y);ctx.fill()}ctx.fillStyle='rgba(255,255,255,.7)';ctx.font='20px sans-serif';ctx.fillText('存活 '+game.survival.toFixed(1)+'s',W-190,99);if(game.inv>0){ctx.fillStyle='#a855f7';ctx.font='bold 22px sans-serif';ctx.fillText('无敌 '+game.inv.toFixed(1)+'s',W/2-46,98)}}
-function drawPlayer(){ctx.save();ctx.translate(player.x,player.y);if(game.inv>0){ctx.beginPath();ctx.arc(0,0,62+Math.sin(game.t*8)*4,0,Math.PI*2);ctx.strokeStyle='rgba(168,85,247,.65)';ctx.lineWidth=8;ctx.stroke()}ctx.fillStyle='rgba(0,0,0,.32)';ctx.beginPath();ctx.ellipse(0,62,58,18,0,0,Math.PI*2);ctx.fill();round(-35,-2,70,80,22,game.inv>0?'#ddd6fe':'#2563eb','#0f172a');ctx.fillStyle='#f8caa2';ctx.beginPath();ctx.arc(0,-36,38,0,Math.PI*2);ctx.fill();ctx.fillStyle='#111827';ctx.beginPath();ctx.arc(-8,-50,34,Math.PI,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(-13,-32,4,0,Math.PI*2);ctx.arc(13,-32,4,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#111827';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,-22,13,.1,Math.PI-.1);ctx.stroke();ctx.fillStyle='#facc15';ctx.font='bold 18px sans-serif';ctx.textAlign='center';ctx.fillText('</>',0,42);ctx.textAlign='left';ctx.restore()}
-function drawObj(o){ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.rot+Math.sin(game.t*5+o.x)*.03);round(-o.size/2,-o.size/2,o.size,o.size,18,o.kind==='obs'?'rgba(127,29,29,.96)':'rgba(20,83,45,.96)',o.color);ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font=o.icon.length>2?'bold 23px sans-serif':'34px sans-serif';ctx.fillText(o.icon,0,-2);ctx.font='bold 17px sans-serif';ctx.fillText(o.text,0,o.size/2-11);ctx.textAlign='left';ctx.restore()}
-function startScreen(){bg();ctx.save();ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font='bold 74px sans-serif';ctx.fillText('Bug 冲刺',W/2,315);ctx.fillStyle='#facc15';ctx.font='bold 34px sans-serif';ctx.fillText('躲 Bug，捡咖啡，今晚先把 Demo 跑通',W/2,370);round(110,465,W-220,270,32,'rgba(15,23,42,.82)','rgba(148,163,184,.26)');ctx.fillStyle='#e5e7eb';ctx.font='28px sans-serif';ctx.fillText('玩法',W/2,520);ctx.font='24px sans-serif';ctx.fillText('左右移动程序员，躲开 Bug 和需求变更',W/2,575);ctx.fillText('收集咖啡、键盘和代码块拿高分',W/2,620);ctx.fillText('血量归零，发版失败',W/2,665);round(150,820,W-300,92,46,'#facc15','#f59e0b');ctx.fillStyle='#111827';ctx.font='bold 34px sans-serif';ctx.fillText('点击开始',W/2,878);ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='21px sans-serif';ctx.fillText('H5 标准样板：用于 Cocos / LayaAir / Godot 复刻对比',W/2,1035);ctx.restore()}
-function overScreen(){ctx.save();ctx.textAlign='center';round(88,350,W-176,520,36,'rgba(15,23,42,.9)','rgba(239,68,68,.38)');ctx.fillStyle='#f87171';ctx.font='bold 58px sans-serif';ctx.fillText('发版失败',W/2,440);ctx.fillStyle='#fff';ctx.font='bold 38px sans-serif';ctx.fillText('最终分数：'+Math.floor(game.score),W/2,535);ctx.fillStyle='#e5e7eb';ctx.font='27px sans-serif';ctx.fillText('存活时间：'+game.survival.toFixed(1)+' 秒',W/2,590);ctx.fillStyle='rgba(255,255,255,.65)';ctx.font='23px sans-serif';ctx.fillText('老板：这个小改一下，明早要。',W/2,665);round(150,735,W-300,92,46,'#22c55e','#16a34a');ctx.fillStyle='#052e16';ctx.font='bold 34px sans-serif';ctx.fillText('再冲一次',W/2,793);ctx.restore()}
-function update(dt){if(game.state!==S.PLAY)return;game.t+=dt;game.survival+=dt;game.score+=dt*10;game.diff=1+Math.floor(game.survival/15)*.45;if(game.inv>0)game.inv-=dt;if(game.shake>0)game.shake-=dt;player.x+= (player.targetX-player.x)*clamp(dt*12,0,1);player.x=clamp(player.x,60,W-60);let interval=Math.max(.32,.85-game.survival/90);game.spawn-=dt;if(game.spawn<=0){spawnObs();if(game.survival>30&&Math.random()<.25)spawnObs();game.spawn=interval}game.prop-=dt;if(game.prop<=0){spawnProp();game.prop=rand(1.7,2.6)}for(const o of game.objs){o.y+=o.speed*dt;if(hit(player,o)){if(o.kind==='obs'){if(game.inv<=0){game.hp-=o.damage;game.shake=.22;particles(o.x,o.y,'#ef4444',18);if(game.hp<=0){game.hp=0;game.state=S.OVER}}else{particles(o.x,o.y,'#a855f7',14);game.score+=20}}else{game.score+=o.score;if(o.heal)game.hp=Math.min(game.maxHp,game.hp+o.heal);if(o.inv)game.inv=o.inv;particles(o.x,o.y,o.color,16)}o.dead=true}}game.objs=game.objs.filter(o=>!o.dead&&o.y<H+100);for(const p of game.parts){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=620*dt}game.parts=game.parts.filter(p=>p.life>0)}
-function render(){ctx.save();if(game.shake>0)ctx.translate(rand(-8,8),rand(-8,8));if(game.state===S.START)startScreen();else{bg();for(const o of game.objs)drawObj(o);for(const p of game.parts){ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1}drawPlayer();hud();if(game.state===S.OVER)overScreen()}ctx.restore()}
-function loop(now){let dt=Math.min(.033,(now-game.last)/1000);game.last=now;update(dt);render();requestAnimationFrame(loop)}requestAnimationFrame(loop);
-})();
-</script>
+<div class="hero">
+  <h1>Bug 冲刺 H5</h1>
+  <p>同一款游戏，两个引擎，选一个开始玩</p>
+</div>
+
+<div class="cards">
+  <a class="card card-cocos" href="cocos-creator-3.8/build/web-mobile/index.html">
+    <div class="card-inner">
+      <div class="badge">Cocos Creator 3.8</div>
+      <div class="card-icon">🎮</div>
+      <h2>Cocos 版本</h2>
+      <p>基于 Cocos Creator 3.8 构建的 Web Mobile 版本</p>
+      <div class="btn">立即游玩 <span class="btn-arrow">→</span></div>
+    </div>
+  </a>
+
+  <a class="card card-laya" href="layaair-3.x/bin/scene-test.html">
+    <div class="card-inner">
+      <div class="badge">LayaAir 3.x</div>
+      <div class="card-icon">⚡</div>
+      <h2>LayaAir 版本</h2>
+      <p>基于 LayaAir 3.x 构建的 Web 版本</p>
+      <div class="btn">立即游玩 <span class="btn-arrow">→</span></div>
+    </div>
+  </a>
+</div>
+
+<div class="footer">躲开 Bug，收集咖啡，今晚先把 Demo 跑通</div>
 </body>
 </html>

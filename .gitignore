@@ -3,6 +3,7 @@
 **/local/
 **/temp/
 **/build/
+!cocos-creator-3.8/build/
 **/profiles/
 **/.creator/
 **/.laya/
