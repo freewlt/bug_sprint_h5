@@ -1,0 +1,11 @@
+{
+  "name": "bug-sprint-layaair-3x",
+  "version": "1.0.0",
+  "description": "LayaAir 3.x version of the Bug Sprint H5 benchmark demo.",
+  "scripts": {
+    "build:web": "node scripts/build-web.js",
+    "build:ide-web": "node scripts/build-ide-web.js",
+    "preview": "node ../engine-benchmark/serve-static.js bin 8090",
+    "scene-preview": "node ../engine-benchmark/serve-static.js . 8091"
+  }
+}

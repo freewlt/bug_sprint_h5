@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-11T03:13:56.098Z",
+  "updated_at": "2026-06-12T02:00:50.935Z",
   "engines": {
     "cocos": {
       "name": "Cocos Creator",
@@ -71,23 +71,66 @@
       "name": "LayaAir",
       "version": "3.x",
       "label": "LayaAir 3.x",
-      "tasks": {},
-      "package_size_mb": null,
-      "package_size_bytes": null,
-      "package_size_path": null,
-      "web_build_time_seconds": null,
-      "last_build_command": null,
-      "last_build_exit_code": null,
-      "first_screen_time_ms": null,
-      "first_screen_runs_ms": [],
-      "first_screen_url": null,
-      "benchmark": {
-        "avgFps": null,
-        "minFps": null,
-        "objectCount": null,
-        "runs": []
+      "tasks": {
+        "create_project": {
+          "started_at": "2026-06-11T07:26:51.848Z",
+          "ended_at": "2026-06-11T07:44:17.026Z",
+          "duration_seconds": 1045.18
+        },
+        "core_gameplay": {
+          "started_at": "2026-06-11T07:38:54.154Z",
+          "ended_at": "2026-06-11T07:44:29.443Z",
+          "duration_seconds": 335.29
+        }
       },
-      "updated_at": null
+      "package_size_mb": 2.52,
+      "package_size_bytes": 2639404,
+      "package_size_path": "layaair-3.x\\bin",
+      "web_build_time_seconds": 0.31,
+      "last_build_command": "cd layaair-3.x && npm run build:web",
+      "last_build_exit_code": 0,
+      "first_screen_time_ms": 249,
+      "first_screen_runs_ms": [
+        410,
+        240,
+        249,
+        242,
+        249
+      ],
+      "first_screen_url": "http://127.0.0.1:8091/bin/scene-test.html",
+      "benchmark": {
+        "avgFps": 58.08,
+        "minFps": 58.07,
+        "objectCount": 4,
+        "runs": [
+          {
+            "avgFps": 59.52,
+            "minFps": 59.04,
+            "objectCount": 4
+          },
+          {
+            "avgFps": 58.07,
+            "minFps": 58.07,
+            "objectCount": 4
+          },
+          {
+            "avgFps": 58.08,
+            "minFps": 56.15,
+            "objectCount": 4
+          },
+          {
+            "avgFps": 58.08,
+            "minFps": 58.07,
+            "objectCount": 4
+          },
+          {
+            "avgFps": 55.21,
+            "minFps": 55.18,
+            "objectCount": 4
+          }
+        ]
+      },
+      "updated_at": "2026-06-12T02:00:50.935Z"
     },
     "godot": {
       "name": "Godot",

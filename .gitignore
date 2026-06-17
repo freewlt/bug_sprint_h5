@@ -5,6 +5,8 @@
 **/build/
 **/profiles/
 **/.creator/
+**/.laya/
+**/release/
 
 # Node / editor noise
 node_modules/

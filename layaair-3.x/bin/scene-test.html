@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Bug Sprint - Scene Test</title>
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#111827;color:#fff;font-family:Arial,"Microsoft YaHei",sans-serif}
+    #error{display:none;position:fixed;inset:0;place-items:center;text-align:center;color:#fca5a5;background:#111827;padding:24px;line-height:1.7}
+  </style>
+</head>
+<body>
+  <div id="error"></div>
+  <script src="./libs/laya.core.js"></script>
+  <script src="./libs/laya.webgl.js"></script>
+  <script src="./libs/laya.ui.js"></script>
+  <script src="./js/bundles/bundle.js"></script>
+  <script>
+    (async function () {
+      try {
+        await Laya.init(750, 1334);
+        Laya.stage.scaleMode = Laya.Stage.SCALE_SHOWALL || 'showall';
+        Laya.stage.screenMode = Laya.Stage.SCREEN_VERTICAL || 'vertical';
+        Laya.stage.alignH = Laya.Stage.ALIGN_CENTER || 'center';
+        Laya.stage.alignV = Laya.Stage.ALIGN_MIDDLE || 'middle';
+        Laya.stage.bgColor = '#111827';
+        await Laya.Scene.open('../assets/Scene.ls');
+      } catch (error) {
+        const panel = document.getElementById('error');
+        panel.style.display = 'grid';
+        panel.textContent = error && error.stack ? error.stack : String(error);
+        throw error;
+      }
+    })();
+  </script>
+</body>
+</html>
